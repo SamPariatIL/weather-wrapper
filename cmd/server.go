@@ -19,6 +19,11 @@ func setupRoutes(app *fiber.App, logger *zap.Logger) {
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
 
+	health := v1.Group("/")
+	health.Get("/", func(ctx fiber.Ctx) error {
+		return ctx.Status(fiber.StatusOK).SendString("Weather wrapper is running woohoo!!")
+	})
+
 	weatherV1 := v1.Group("/weather")
 	weatherV1.Get("/now", weatherHandler.GetCurrentWeather)
 	weatherV1.Get("/forecast", weatherHandler.GetFiveDayForecast)
