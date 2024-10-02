@@ -1,0 +1,27 @@
+services:
+#  weather:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - '8181:8181'
+#    volumes:
+#      - weather-data:/app
+
+  redis:
+    image: redis:7.4.0-alpine
+    volumes:
+      - redis-data:/app/redis/data
+    ports:
+      - '6379:6379'
+    env_file:
+      - .env.redis-prod
+    environment:
+      - REDIS_ADDRESS
+      - REDIS_PASSWORD
+      - REDIS_DB
+      - REDIS_TIMEOUT
+
+volumes:
+  weather-data:
+  redis-data:

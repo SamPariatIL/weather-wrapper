@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/SamPariatIL/weather-wrapper/config"
 	"github.com/SamPariatIL/weather-wrapper/entities"
+	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -14,10 +15,13 @@ type GeocodingService interface {
 }
 
 type geocodingService struct {
+	logger *zap.Logger
 }
 
-func NewGeocodingService() GeocodingService {
-	return &geocodingService{}
+func NewGeocodingService(zl *zap.Logger) GeocodingService {
+	return &geocodingService{
+		logger: zl,
+	}
 }
 
 func (gs *geocodingService) GetGeocodeForCity(city string, limit uint) (*entities.Coord, error) {

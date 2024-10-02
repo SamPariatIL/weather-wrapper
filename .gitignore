@@ -24,3 +24,8 @@ go.work.sum
 # env file
 .env
 .air.toml
+*tmp
+.env.redis-local
+.env.redis-prod
+.env-postgres-local
+.env-postgres-prod

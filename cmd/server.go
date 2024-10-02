@@ -3,17 +3,22 @@ package cmd
 import (
 	"github.com/SamPariatIL/weather-wrapper/config"
 	"github.com/SamPariatIL/weather-wrapper/handlers"
+	"github.com/SamPariatIL/weather-wrapper/repository"
 	"github.com/SamPariatIL/weather-wrapper/services"
+	"github.com/SamPariatIL/weather-wrapper/vendors"
 	"github.com/gofiber/fiber/v3"
 	"go.uber.org/zap"
 	"log"
 )
 
 func setupRoutes(app *fiber.App, logger *zap.Logger) {
-	weatherService := services.NewWeatherService()
+	redisClient := vendors.GetRedisClient()
+
+	weatherRepo := repository.NewWeatherRepository(redisClient, logger)
+	weatherService := services.NewWeatherService(weatherRepo, logger)
 	weatherHandler := handlers.NewWeatherHandler(weatherService, logger)
 
-	geocodingService := services.NewGeocodingService()
+	geocodingService := services.NewGeocodingService(logger)
 	geocodingHandler := handlers.NewGeocodingHandler(geocodingService, logger)
 
 	api := app.Group("/api")
@@ -47,6 +52,8 @@ func RunServer() {
 	}(logger)
 
 	config.GetConfig()
+	initVendors()
+
 	app := fiber.New()
 
 	setupRoutes(app, logger)

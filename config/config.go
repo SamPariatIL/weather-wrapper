@@ -14,9 +14,10 @@ var (
 )
 
 type Config struct {
-	GeocodeConfig GeocodeConfig
-	RedisConfig   RedisConfig
-	WeatherConfig WeatherConfig
+	GeocodeConfig  GeocodeConfig
+	RedisConfig    RedisConfig
+	PostgresConfig PostgresConfig
+	WeatherConfig  WeatherConfig
 }
 
 type GeocodeConfig struct {
@@ -34,6 +35,16 @@ type RedisConfig struct {
 	Password string
 	DB       int
 	Timeout  time.Duration
+}
+
+type PostgresConfig struct {
+	Host     string
+	User     string
+	Password string
+	Database string
+	Port     int
+	SSLMode  string
+	TimeZone string
 }
 
 func getEnv(key, fallback string) string {
@@ -73,6 +84,16 @@ func loadConfig() (*Config, error) {
 		Password: getEnv("REDIS_PASSWORD", ""),
 		DB:       parseEnvInt("REDIS_DB", 0),
 		Timeout:  10,
+	}
+
+	config.PostgresConfig = PostgresConfig{
+		Database: getEnv("POSTGRES_DATABASE", ""),
+		Password: getEnv("POSTGRES_PASSWORD", ""),
+		Host:     getEnv("POSTGRES_HOST", "localhost"),
+		Port:     parseEnvInt("POSTGRES_PORT", 5432),
+		SSLMode:  getEnv("POSTGRES_SSL_MODE", "disable"),
+		User:     getEnv("POSTGRES_USER", ""),
+		TimeZone: getEnv("POSTGRES_TIMEZONE", "Asia/Shanghai"),
 	}
 
 	return &config, nil

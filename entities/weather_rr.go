@@ -77,8 +77,8 @@ type Forecast struct {
 			Deg   int     `json:"deg"`
 			Gust  float64 `json:"gust"`
 		} `json:"wind"`
-		Visibility int `json:"visibility"`
-		Pop        int `json:"pop"`
+		Visibility int     `json:"visibility"`
+		Pop        float32 `json:"pop"`
 		Sys        struct {
 			Pod string `json:"pod"`
 		} `json:"sys"`
