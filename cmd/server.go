@@ -18,7 +18,8 @@ func setupRoutes(app *fiber.App, logger *zap.Logger) {
 	weatherService := services.NewWeatherService(weatherRepo, logger)
 	weatherHandler := handlers.NewWeatherHandler(weatherService, logger)
 
-	geocodingService := services.NewGeocodingService(logger)
+	geocodingRepo := repository.NewGeocodingRepository(redisClient, logger)
+	geocodingService := services.NewGeocodingService(geocodingRepo, logger)
 	geocodingHandler := handlers.NewGeocodingHandler(geocodingService, logger)
 
 	api := app.Group("/api")

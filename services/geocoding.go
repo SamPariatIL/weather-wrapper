@@ -1,31 +1,46 @@
 package services
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/SamPariatIL/weather-wrapper/config"
 	"github.com/SamPariatIL/weather-wrapper/entities"
+	"github.com/SamPariatIL/weather-wrapper/repository"
 	"go.uber.org/zap"
 	"net/http"
 )
 
 type GeocodingService interface {
 	GetGeocodeForCity(city string, limit uint) (*entities.Coord, error)
-	GetCityFromLatLon(lat float32, lon float32) (string, error)
+	GetCityFromLatLon(lat, lon float32) (string, error)
 }
 
 type geocodingService struct {
-	logger *zap.Logger
+	geocodingRepo repository.GeocodingRepository
+	logger        *zap.Logger
 }
 
-func NewGeocodingService(zl *zap.Logger) GeocodingService {
+func NewGeocodingService(gr repository.GeocodingRepository, zl *zap.Logger) GeocodingService {
 	return &geocodingService{
-		logger: zl,
+		geocodingRepo: gr,
+		logger:        zl,
 	}
 }
 
 func (gs *geocodingService) GetGeocodeForCity(city string, limit uint) (*entities.Coord, error) {
 	conf := config.GetConfig()
+
+	var err error
+
+	savedGeocode, err := gs.geocodingRepo.GetGeocodeForCity(context.Background(), city, limit)
+	if err != nil {
+		return nil, err
+	}
+
+	if savedGeocode != nil {
+		return savedGeocode, nil
+	}
 
 	url := fmt.Sprintf(
 		"https://%s/direct?q=%s&limit=%d&appid=%s",
@@ -35,12 +50,11 @@ func (gs *geocodingService) GetGeocodeForCity(city string, limit uint) (*entitie
 		conf.GeocodeConfig.APIKey,
 	)
 
-	var err error
-
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, nil
 	}
+
 	defer func() {
 		err = resp.Body.Close()
 	}()
@@ -52,11 +66,32 @@ func (gs *geocodingService) GetGeocodeForCity(city string, limit uint) (*entitie
 		return nil, err
 	}
 
-	return &entities.Coord{Lat: geocodes[0].Lat, Lon: geocodes[0].Lon}, nil
+	coords := entities.Coord{
+		Lat: geocodes[0].Lat,
+		Lon: geocodes[0].Lon,
+	}
+
+	err = gs.geocodingRepo.SetGeocodeForCity(context.Background(), city, limit, &coords)
+	if err != nil {
+		return nil, err
+	}
+
+	return &coords, nil
 }
 
-func (gs *geocodingService) GetCityFromLatLon(lat float32, lon float32) (string, error) {
+func (gs *geocodingService) GetCityFromLatLon(lat, lon float32) (string, error) {
 	conf := config.GetConfig()
+
+	var err error
+
+	savedCity, err := gs.geocodingRepo.GetCityFromLatLon(context.Background(), lat, lon)
+	if err != nil {
+		return "", err
+	}
+
+	if savedCity != "" {
+		return savedCity, nil
+	}
 
 	url := fmt.Sprintf(
 		"https://%s/reverse?lat=%f&lon=%f&limit=1&appid=%s",
@@ -66,12 +101,11 @@ func (gs *geocodingService) GetCityFromLatLon(lat float32, lon float32) (string,
 		conf.GeocodeConfig.APIKey,
 	)
 
-	var err error
-
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", nil
 	}
+
 	defer func() {
 		err = resp.Body.Close()
 	}()
@@ -83,5 +117,12 @@ func (gs *geocodingService) GetCityFromLatLon(lat float32, lon float32) (string,
 		return "", err
 	}
 
-	return geocodes[0].Name, nil
+	city := geocodes[0].Name
+
+	err = gs.geocodingRepo.SetCityFromLatLon(context.Background(), lat, lon, city)
+	if err != nil {
+		return "", err
+	}
+
+	return city, nil
 }

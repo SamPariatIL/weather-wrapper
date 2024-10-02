@@ -8,7 +8,7 @@ import (
 	"log"
 )
 
-var PostgresDB *gorm.DB
+var postgresDB *gorm.DB
 
 func InitPostgres() {
 	cfg := config.GetConfig()
@@ -25,8 +25,12 @@ func InitPostgres() {
 
 	var err error
 
-	PostgresDB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	postgresDB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Failed to connect to Postgres: %v", err)
 	}
+}
+
+func GetPostgresDB() *gorm.DB {
+	return postgresDB
 }
