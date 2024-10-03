@@ -47,7 +47,7 @@ func (gr *geocodingRepository) GetGeocodeForCity(ctx context.Context, city strin
 		return nil, err
 	}
 
-	gr.logger.Info(fmt.Sprintf("Fetched cached geocode for %s, %d", city, limit))
+	gr.logger.Info(fmt.Sprintf("fetched cached geocode for %s, %d", city, limit))
 
 	return nil, nil
 }
@@ -62,7 +62,7 @@ func (gr *geocodingRepository) GetCityFromLatLon(ctx context.Context, lat, lon f
 		return "", err
 	}
 
-	gr.logger.Info(fmt.Sprintf("Fetched cached city for %f, %f", lat, lon))
+	gr.logger.Info(fmt.Sprintf("fetched cached city for %f, %f", lat, lon))
 
 	return city, nil
 }
@@ -80,7 +80,7 @@ func (gr *geocodingRepository) SetGeocodeForCity(ctx context.Context, city strin
 		return err
 	}
 
-	gr.logger.Info(fmt.Sprintf("Saved geocode for %s", city))
+	gr.logger.Info(fmt.Sprintf("saved geocode for %s", city))
 
 	return nil
 }
@@ -93,7 +93,7 @@ func (gr *geocodingRepository) SetCityFromLatLon(ctx context.Context, lat, lon f
 		return err
 	}
 
-	gr.logger.Info(fmt.Sprintf("Saved city for %f, %f", lat, lon))
+	gr.logger.Info(fmt.Sprintf("saved city for %f, %f", lat, lon))
 
 	return nil
 }

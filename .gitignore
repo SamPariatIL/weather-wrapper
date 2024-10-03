@@ -25,8 +25,8 @@ go.work.sum
 .env
 .air.toml
 *tmp
-.env.geocode-local
-.env.geocode-prod
+.env.geocoding-local
+.env.geocoding-prod
 .env.weather-local
 .env.weather-prod
 .env.redis-local
