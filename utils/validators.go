@@ -23,6 +23,13 @@ func ValidateLatLon(latString, lonString string) (float32, float32, error) {
 		return 0.0, 0.0, errors.New("longitude is required")
 	}
 
+	if lat < -90.0 || lat > 90.0 {
+		return 0.0, 0.0, errors.New("latitude must be between -90 and 90")
+	}
+	if lon < -180.0 || lon > 180.0 {
+		return 0.0, 0.0, errors.New("longitude must be between -180 and 180")
+	}
+
 	return float32(lat), float32(lon), nil
 }
 

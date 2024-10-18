@@ -12,6 +12,7 @@ var postgresDB *gorm.DB
 
 func InitPostgres() {
 	cfg := config.GetConfig()
+
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s",
 		cfg.PostgresConfig.Host,

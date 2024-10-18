@@ -3,13 +3,13 @@ package handlers
 import (
 	"github.com/SamPariatIL/weather-wrapper/services"
 	"github.com/SamPariatIL/weather-wrapper/utils"
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
 
 type GeocodingHandler interface {
-	GetGeocodeForCity(ctx fiber.Ctx) error
-	GetCityFromLatLon(ctx fiber.Ctx) error
+	GetGeocodeForCity(ctx *fiber.Ctx) error
+	GetCityFromLatLon(ctx *fiber.Ctx) error
 }
 
 type geocodingHandler struct {
@@ -24,7 +24,18 @@ func NewGeocodingHandler(gs services.GeocodingService, zl *zap.Logger) Geocoding
 	}
 }
 
-func (gh *geocodingHandler) GetGeocodeForCity(ctx fiber.Ctx) error {
+// GetGeocodeForCity godoc
+// @Summary Get geocoding
+// @Description Get geocoding for a given city
+// @Tags geocode
+// @Accept json
+// @Produce json
+// @Param city query string true "City"
+// @Success 200
+// @Failure 400
+// @Failure 500
+// @Router /geocode [get]
+func (gh *geocodingHandler) GetGeocodeForCity(ctx *fiber.Ctx) error {
 	city := ctx.Query("city")
 	err := utils.ValidateCity(city)
 	if err != nil {
@@ -48,7 +59,19 @@ func (gh *geocodingHandler) GetGeocodeForCity(ctx fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(utils.CustomResponse(coords, fiber.StatusOK, "", successFetchingGeocode))
 }
 
-func (gh *geocodingHandler) GetCityFromLatLon(ctx fiber.Ctx) error {
+// GetCityFromLatLon godoc
+// @Summary Get city
+// @Description Get city from latitude and longitude
+// @Tags geocode
+// @Accept json
+// @Produce json
+// @Param lat query string true "Latitude"
+// @Param long query string true "Longitude"
+// @Success 200
+// @Failure 400
+// @Failure 500
+// @Router /geocode/reverse [get]
+func (gh *geocodingHandler) GetCityFromLatLon(ctx *fiber.Ctx) error {
 	lat, lon, err := utils.ValidateLatLon(ctx.Query("lat"), ctx.Query("long"))
 	if err != nil {
 		gh.logger.Warn(invalidLatLon)
@@ -56,6 +79,12 @@ func (gh *geocodingHandler) GetCityFromLatLon(ctx fiber.Ctx) error {
 	}
 
 	city, err := gh.geocodingService.GetCityFromLatLon(lat, lon)
+
+	if city == "" && err != nil {
+		gh.logger.Warn(invalidLatLon)
+		return ctx.Status(fiber.StatusNotFound).JSON(utils.CustomResponse(nil, fiber.StatusNotFound, invalidLatLon, err.Error()))
+	}
+
 	if err != nil {
 		gh.logger.Error(err.Error())
 		return ctx.Status(fiber.StatusInternalServerError).JSON(utils.CustomResponse(nil, fiber.StatusInternalServerError, reverseGeocodingFetchingError, err.Error()))

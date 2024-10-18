@@ -7,6 +7,7 @@
 *.dll
 *.so
 *.dylib
+*.scannerwork
 
 # Test binary, built with `go test -c`
 *.test
@@ -31,5 +32,6 @@ go.work.sum
 .env.weather-prod
 .env.redis-local
 .env.redis-prod
-.env-postgres-local
-.env-postgres-prod
+.env.postgres-local
+.env.postgres-prod
+weather-wrapper-sonar.sh

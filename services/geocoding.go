@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/SamPariatIL/weather-wrapper/config"
 	"github.com/SamPariatIL/weather-wrapper/entities"
@@ -115,6 +116,10 @@ func (gs *geocodingService) GetCityFromLatLon(lat, lon float32) (string, error) 
 	err = json.NewDecoder(resp.Body).Decode(&geocodes)
 	if err != nil {
 		return "", err
+	}
+
+	if len(geocodes) == 0 {
+		return "", errors.New("no city found")
 	}
 
 	city := geocodes[0].Name

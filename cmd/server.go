@@ -2,11 +2,13 @@ package cmd
 
 import (
 	"github.com/SamPariatIL/weather-wrapper/config"
+	_ "github.com/SamPariatIL/weather-wrapper/docs"
 	"github.com/SamPariatIL/weather-wrapper/handlers"
 	"github.com/SamPariatIL/weather-wrapper/repository"
 	"github.com/SamPariatIL/weather-wrapper/services"
 	"github.com/SamPariatIL/weather-wrapper/vendors"
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
 	"go.uber.org/zap"
 	"log"
 )
@@ -26,9 +28,12 @@ func setupRoutes(app *fiber.App, logger *zap.Logger) {
 	v1 := api.Group("/v1")
 
 	health := v1.Group("/")
-	health.Get("/", func(ctx fiber.Ctx) error {
+	health.Get("/", func(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusOK).SendString("Weather wrapper is running woohoo!!")
 	})
+
+	apiDocs := v1.Group("/swagger")
+	apiDocs.Get("*", swagger.HandlerDefault)
 
 	weatherV1 := v1.Group("/weather")
 	weatherV1.Get("/now", weatherHandler.GetCurrentWeather)
