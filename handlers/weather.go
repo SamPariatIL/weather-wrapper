@@ -40,17 +40,20 @@ func (wh *weatherHandler) GetCurrentWeather(ctx *fiber.Ctx) error {
 	lat, lon, err := utils.ValidateLatLon(ctx.Query("lat"), ctx.Query("long"))
 	if err != nil {
 		wh.logger.Warn(invalidLatLon)
-		return ctx.Status(fiber.StatusBadRequest).JSON(utils.CustomResponse(nil, fiber.StatusBadRequest, invalidLatLon, err.Error()))
+		return ctx.Status(fiber.StatusBadRequest).
+			JSON(utils.CustomResponse(nil, fiber.StatusBadRequest, invalidLatLon, err.Error()))
 	}
 
 	currentWeather, err := wh.weatherService.GetCurrentWeather(lat, lon)
 	if err != nil {
 		wh.logger.Error(err.Error())
-		return ctx.Status(fiber.StatusInternalServerError).JSON(utils.CustomResponse(nil, fiber.StatusInternalServerError, weatherFetchingError, err.Error()))
+		return ctx.Status(fiber.StatusInternalServerError).
+			JSON(utils.CustomResponse(nil, fiber.StatusInternalServerError, weatherFetchingError, err.Error()))
 	}
 
 	wh.logger.Info(successFetchingWeather)
-	return ctx.Status(fiber.StatusOK).JSON(utils.CustomResponse(currentWeather, fiber.StatusOK, "", successFetchingWeather))
+	return ctx.Status(fiber.StatusOK).
+		JSON(utils.CustomResponse(currentWeather, fiber.StatusOK, "", successFetchingWeather))
 }
 
 // GetFiveDayForecast godoc
@@ -68,15 +71,18 @@ func (wh *weatherHandler) GetCurrentWeather(ctx *fiber.Ctx) error {
 func (wh *weatherHandler) GetFiveDayForecast(ctx *fiber.Ctx) error {
 	lat, lon, err := utils.ValidateLatLon(ctx.Query("lat"), ctx.Query("long"))
 	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(utils.CustomResponse(nil, fiber.StatusBadRequest, invalidLatLon, err.Error()))
+		return ctx.Status(fiber.StatusBadRequest).
+			JSON(utils.CustomResponse(nil, fiber.StatusBadRequest, invalidLatLon, err.Error()))
 	}
 
 	forecast, err := wh.weatherService.GetFiveDayForecast(lat, lon)
 	if err != nil {
 		wh.logger.Error(err.Error())
-		return ctx.Status(fiber.StatusInternalServerError).JSON(utils.CustomResponse(nil, fiber.StatusInternalServerError, weatherFetchingError, err.Error()))
+		return ctx.Status(fiber.StatusInternalServerError).
+			JSON(utils.CustomResponse(nil, fiber.StatusInternalServerError, weatherFetchingError, err.Error()))
 	}
 
 	wh.logger.Info(successFetchingWeather)
-	return ctx.Status(fiber.StatusOK).JSON(utils.CustomResponse(forecast, fiber.StatusOK, "", successFetchingWeather))
+	return ctx.Status(fiber.StatusOK).
+		JSON(utils.CustomResponse(forecast, fiber.StatusOK, "", successFetchingWeather))
 }

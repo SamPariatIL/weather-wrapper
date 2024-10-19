@@ -26,6 +26,8 @@ go.work.sum
 .env
 .air.toml
 *tmp
+
+# Secrets
 .env.geocoding-local
 .env.geocoding-prod
 .env.weather-local
@@ -34,4 +36,8 @@ go.work.sum
 .env.redis-prod
 .env.postgres-local
 .env.postgres-prod
+.env.firebase-local
+.env.firebase-prod
+
+# Sonar files
 weather-wrapper-sonar.sh

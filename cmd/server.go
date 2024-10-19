@@ -8,6 +8,9 @@ import (
 	"github.com/SamPariatIL/weather-wrapper/services"
 	"github.com/SamPariatIL/weather-wrapper/vendors"
 	"github.com/gofiber/fiber/v2"
+	fiberCors "github.com/gofiber/fiber/v2/middleware/cors"
+	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
+	fiberRecover "github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/swagger"
 	"go.uber.org/zap"
 	"log"
@@ -15,6 +18,11 @@ import (
 
 func setupRoutes(app *fiber.App, logger *zap.Logger) {
 	redisClient := vendors.GetRedisClient()
+	authClient := vendors.GetFirebaseAuth()
+
+	userRepo := repository.NewUserRepository(authClient, logger)
+	userService := services.NewUserService(userRepo, logger)
+	userHandler := handlers.NewUserHandler(userService, logger)
 
 	weatherRepo := repository.NewWeatherRepository(redisClient, logger)
 	weatherService := services.NewWeatherService(weatherRepo, logger)
@@ -42,6 +50,11 @@ func setupRoutes(app *fiber.App, logger *zap.Logger) {
 	geocodingV1 := v1.Group("/geocode")
 	geocodingV1.Get("/", geocodingHandler.GetGeocodeForCity)
 	geocodingV1.Get("/reverse", geocodingHandler.GetCityFromLatLon)
+
+	usersV1 := v1.Group("/users")
+	usersV1.Post("/signup", userHandler.CreateUser)
+	usersV1.Put("/:uid", userHandler.UpdateUser)
+	usersV1.Delete("/:uid", userHandler.DeleteUser)
 }
 
 func RunServer() {
@@ -61,6 +74,9 @@ func RunServer() {
 	initVendors()
 
 	app := fiber.New()
+	app.Use(fiberLogger.New())
+	app.Use(fiberRecover.New())
+	app.Use(fiberCors.New())
 
 	setupRoutes(app, logger)
 

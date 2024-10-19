@@ -14,6 +14,7 @@ var (
 )
 
 type Config struct {
+	FirebaseConfig FirebaseConfig
 	GeocodeConfig  GeocodeConfig
 	RedisConfig    RedisConfig
 	PostgresConfig PostgresConfig
@@ -47,6 +48,20 @@ type PostgresConfig struct {
 	TimeZone string
 }
 
+type FirebaseConfig struct {
+	Type                    string `json:"type"`
+	ProjectID               string `json:"project_id"`
+	PrivateKeyID            string `json:"private_key_id"`
+	PrivateKey              string `json:"private_key"`
+	ClientEmail             string `json:"client_email"`
+	ClientID                string `json:"client_id"`
+	AuthURI                 string `json:"auth_uri"`
+	TokenURI                string `json:"token_uri"`
+	AuthProviderX509CertURL string `json:"auth_provider_x_509_cert_url"`
+	ClientX509CertURL       string `json:"client_x_509_cert_url"`
+	UniverseDomain          string `json:"universe_domain"`
+}
+
 func getEnv(key, fallback string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value
@@ -68,6 +83,20 @@ func parseEnvInt(key string, fallback int) int {
 
 func loadConfig() (*Config, error) {
 	var config Config
+
+	config.FirebaseConfig = FirebaseConfig{
+		Type:                    getEnv("FIREBASE_TYPE", ""),
+		ProjectID:               getEnv("FIREBASE_PROJECT_ID", ""),
+		PrivateKeyID:            getEnv("FIREBASE_PRIVATE_KEY_ID", ""),
+		PrivateKey:              getEnv("FIREBASE_PRIVATE_KEY", ""),
+		ClientEmail:             getEnv("FIREBASE_CLIENT_EMAIL", ""),
+		ClientID:                getEnv("FIREBASE_CLIENT_ID", ""),
+		AuthURI:                 "https://accounts.google.com/" + getEnv("FIREBASE_AUTH_URI", ""),
+		TokenURI:                "https://oauth2.googleapis.com/" + getEnv("FIREBASE_TOKEN_URI", ""),
+		AuthProviderX509CertURL: "https://www.googleapis.com/" + getEnv("FIREBASE_AUTH_PROVIDER_X509_CERT_URL", ""),
+		ClientX509CertURL:       "https://www.googleapis.com/" + getEnv("FIREBASE_CLIENT_X509_CERT_URL", ""),
+		UniverseDomain:          getEnv("FIREBASE_UNIVERSE_DOMAIN", ""),
+	}
 
 	config.GeocodeConfig = GeocodeConfig{
 		APIKey:  getEnv("GEOCODE_API_KEY", ""),

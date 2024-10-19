@@ -14,7 +14,7 @@ import (
 
 type GeocodingService interface {
 	GetGeocodeForCity(city string, limit uint) (*entities.Coord, error)
-	GetCityFromLatLon(lat, lon float32) (string, error)
+	GetCityFromLatLon(lat, lon float32) (*string, error)
 }
 
 type geocodingService struct {
@@ -80,17 +80,17 @@ func (gs *geocodingService) GetGeocodeForCity(city string, limit uint) (*entitie
 	return &coords, nil
 }
 
-func (gs *geocodingService) GetCityFromLatLon(lat, lon float32) (string, error) {
+func (gs *geocodingService) GetCityFromLatLon(lat, lon float32) (*string, error) {
 	conf := config.GetConfig()
 
 	var err error
 
 	savedCity, err := gs.geocodingRepo.GetCityFromLatLon(context.Background(), lat, lon)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	if savedCity != "" {
+	if savedCity != nil {
 		return savedCity, nil
 	}
 
@@ -104,7 +104,7 @@ func (gs *geocodingService) GetCityFromLatLon(lat, lon float32) (string, error) 
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return "", nil
+		return nil, err
 	}
 
 	defer func() {
@@ -115,19 +115,19 @@ func (gs *geocodingService) GetCityFromLatLon(lat, lon float32) (string, error) 
 
 	err = json.NewDecoder(resp.Body).Decode(&geocodes)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	if len(geocodes) == 0 {
-		return "", errors.New("no city found")
+		return nil, errors.New("no city found")
 	}
 
 	city := geocodes[0].Name
 
 	err = gs.geocodingRepo.SetCityFromLatLon(context.Background(), lat, lon, city)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return city, nil
+	return &city, nil
 }

@@ -13,7 +13,7 @@ import (
 
 type GeocodingRepository interface {
 	GetGeocodeForCity(ctx context.Context, city string, limit uint) (*entities.Coord, error)
-	GetCityFromLatLon(ctx context.Context, lat, lon float32) (string, error)
+	GetCityFromLatLon(ctx context.Context, lat, lon float32) (*string, error)
 	SetGeocodeForCity(ctx context.Context, city string, limit uint, coord *entities.Coord) error
 	SetCityFromLatLon(ctx context.Context, lat, lon float32, city string) error
 }
@@ -52,19 +52,19 @@ func (gr *geocodingRepository) GetGeocodeForCity(ctx context.Context, city strin
 	return nil, nil
 }
 
-func (gr *geocodingRepository) GetCityFromLatLon(ctx context.Context, lat, lon float32) (string, error) {
+func (gr *geocodingRepository) GetCityFromLatLon(ctx context.Context, lat, lon float32) (*string, error) {
 	key := getCityKey(lat, lon)
 
 	city, err := gr.redisClient.Get(ctx, key).Result()
 	if errors.Is(err, redis.Nil) {
-		return "", nil
+		return nil, nil
 	} else if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	gr.logger.Info(fmt.Sprintf("fetched cached city for %f, %f", lat, lon))
 
-	return city, nil
+	return &city, nil
 }
 
 func (gr *geocodingRepository) SetGeocodeForCity(ctx context.Context, city string, limit uint, coord *entities.Coord) error {

@@ -1,0 +1,56 @@
+package services
+
+import (
+	"context"
+	"github.com/SamPariatIL/weather-wrapper/entities"
+	"github.com/SamPariatIL/weather-wrapper/repository"
+	"go.uber.org/zap"
+)
+
+type UserService interface {
+	CreateUser(ctx context.Context, user *entities.UserDetails) (*string, error)
+	UpdateUser(ctx context.Context, uid string, user *entities.UserDetails) (*string, error)
+	DeleteUser(ctx context.Context, uid string) (*string, error)
+}
+
+type userService struct {
+	userRepo repository.UserRepository
+	logger   *zap.Logger
+}
+
+func NewUserService(ur repository.UserRepository, zl *zap.Logger) UserService {
+	return &userService{
+		userRepo: ur,
+		logger:   zl,
+	}
+}
+
+func (us *userService) CreateUser(ctx context.Context, user *entities.UserDetails) (*string, error) {
+	userId, err := us.userRepo.CreateUser(ctx, user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return userId, nil
+}
+
+func (us *userService) UpdateUser(ctx context.Context, uid string, user *entities.UserDetails) (*string, error) {
+	userId, err := us.userRepo.UpdateUser(ctx, uid, user)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return userId, nil
+}
+
+func (us *userService) DeleteUser(ctx context.Context, uid string) (*string, error) {
+	userId, err := us.userRepo.DeleteUser(ctx, uid)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return userId, nil
+}
