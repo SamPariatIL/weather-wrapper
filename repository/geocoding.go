@@ -12,9 +12,9 @@ import (
 )
 
 type GeocodingRepository interface {
-	GetGeocodeForCity(ctx context.Context, city string, limit uint) (*entities.Coord, error)
+	GetGeocodeForCity(ctx context.Context, city string, limit int) (*entities.Coord, error)
 	GetCityFromLatLon(ctx context.Context, lat, lon float32) (*string, error)
-	SetGeocodeForCity(ctx context.Context, city string, limit uint, coord *entities.Coord) error
+	SetGeocodeForCity(ctx context.Context, city string, limit int, coord *entities.Coord) error
 	SetCityFromLatLon(ctx context.Context, lat, lon float32, city string) error
 }
 
@@ -30,7 +30,7 @@ func NewGeocodingRepository(rc *redis.Client, zl *zap.Logger) GeocodingRepositor
 	}
 }
 
-func (gr *geocodingRepository) GetGeocodeForCity(ctx context.Context, city string, limit uint) (*entities.Coord, error) {
+func (gr *geocodingRepository) GetGeocodeForCity(ctx context.Context, city string, limit int) (*entities.Coord, error) {
 	key := getGeocodeKey(city, limit)
 
 	coordJSON, err := gr.redisClient.Get(ctx, key).Result()
@@ -67,7 +67,7 @@ func (gr *geocodingRepository) GetCityFromLatLon(ctx context.Context, lat, lon f
 	return &city, nil
 }
 
-func (gr *geocodingRepository) SetGeocodeForCity(ctx context.Context, city string, limit uint, coord *entities.Coord) error {
+func (gr *geocodingRepository) SetGeocodeForCity(ctx context.Context, city string, limit int, coord *entities.Coord) error {
 	key := getGeocodeKey(city, limit)
 
 	coordJSON, err := json.Marshal(coord)
@@ -102,6 +102,6 @@ func getCityKey(latitude, longitude float32) string {
 	return fmt.Sprintf("reverse_geocode_%f_%f", latitude, longitude)
 }
 
-func getGeocodeKey(city string, limit uint) string {
+func getGeocodeKey(city string, limit int) string {
 	return fmt.Sprintf("geocode_%s_%d", city, limit)
 }

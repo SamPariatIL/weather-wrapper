@@ -13,7 +13,7 @@ import (
 )
 
 type GeocodingService interface {
-	GetGeocodeForCity(city string, limit uint) (*entities.Coord, error)
+	GetGeocodeForCity(city string, limit int) (*entities.Coord, error)
 	GetCityFromLatLon(lat, lon float32) (*string, error)
 }
 
@@ -29,7 +29,7 @@ func NewGeocodingService(gr repository.GeocodingRepository, zl *zap.Logger) Geoc
 	}
 }
 
-func (gs *geocodingService) GetGeocodeForCity(city string, limit uint) (*entities.Coord, error) {
+func (gs *geocodingService) GetGeocodeForCity(city string, limit int) (*entities.Coord, error) {
 	conf := config.GetConfig()
 
 	var err error

@@ -33,17 +33,20 @@ func ValidateLatLon(latString, lonString string) (float32, float32, error) {
 	return float32(lat), float32(lon), nil
 }
 
-func ValidateLimit(limitString string) (uint, error) {
+func ValidateLimit(limitString string) (int, error) {
 	if limitString == "" {
 		return 5, nil
 	}
 
-	limit, err := strconv.ParseUint(limitString, 10, 32)
+	limit, err := strconv.ParseInt(limitString, 10, 32)
 	if err != nil {
 		return 0, errors.New("limit is not a number")
 	}
+	if limit < 1 || limit > 10 {
+		return 0, errors.New("limit must be between 1 and 10")
+	}
 
-	return uint(limit), nil
+	return int(limit), nil
 }
 
 func ValidateCity(city string) error {
