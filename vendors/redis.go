@@ -5,7 +5,6 @@ import (
 	"github.com/SamPariatIL/weather-wrapper/config"
 	"github.com/redis/go-redis/v9"
 	"log"
-	"time"
 )
 
 var redisClient *redis.Client
@@ -19,7 +18,7 @@ func InitRedis() {
 		DB:       conf.RedisConfig.DB,
 	})
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*conf.RedisConfig.Timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), conf.RedisConfig.Timeout)
 	defer cancel()
 
 	_, err := redisClient.Ping(ctx).Result()

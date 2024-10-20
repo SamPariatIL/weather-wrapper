@@ -85,44 +85,44 @@ func loadConfig() (*Config, error) {
 	var config Config
 
 	config.FirebaseConfig = FirebaseConfig{
-		Type:                    getEnv("FIREBASE_TYPE", ""),
-		ProjectID:               getEnv("FIREBASE_PROJECT_ID", ""),
-		PrivateKeyID:            getEnv("FIREBASE_PRIVATE_KEY_ID", ""),
-		PrivateKey:              getEnv("FIREBASE_PRIVATE_KEY", ""),
-		ClientEmail:             getEnv("FIREBASE_CLIENT_EMAIL", ""),
-		ClientID:                getEnv("FIREBASE_CLIENT_ID", ""),
-		AuthURI:                 "https://accounts.google.com/" + getEnv("FIREBASE_AUTH_URI", ""),
-		TokenURI:                "https://oauth2.googleapis.com/" + getEnv("FIREBASE_TOKEN_URI", ""),
-		AuthProviderX509CertURL: "https://www.googleapis.com/" + getEnv("FIREBASE_AUTH_PROVIDER_X509_CERT_URL", ""),
-		ClientX509CertURL:       "https://www.googleapis.com/" + getEnv("FIREBASE_CLIENT_X509_CERT_URL", ""),
-		UniverseDomain:          getEnv("FIREBASE_UNIVERSE_DOMAIN", ""),
+		Type:                    getEnv(FirebaseType, ""),
+		ProjectID:               getEnv(FirebaseProjectId, ""),
+		PrivateKeyID:            getEnv(FirebasePrivateKeyId, ""),
+		PrivateKey:              getEnv(FirebasePrivateKey, ""),
+		ClientEmail:             getEnv(FirebaseClientEmail, ""),
+		ClientID:                getEnv(FirebaseClientId, ""),
+		AuthURI:                 "https://accounts.google.com/" + getEnv(FirebaseAuthUri, ""),
+		TokenURI:                "https://oauth2.googleapis.com/" + getEnv(FirebaseTokenUri, ""),
+		AuthProviderX509CertURL: "https://www.googleapis.com/" + getEnv(FirebaseAuthProviderX509CertUrl, ""),
+		ClientX509CertURL:       "https://www.googleapis.com/" + getEnv(FirebaseClientX509CertUrl, ""),
+		UniverseDomain:          getEnv(FirebaseUniverseDomain, ""),
 	}
 
 	config.GeocodeConfig = GeocodeConfig{
-		APIKey:  getEnv("GEOCODE_API_KEY", ""),
-		BaseURL: getEnv("GEOCODE_BASE_URL", ""),
+		APIKey:  getEnv(GeocodeApiKey, ""),
+		BaseURL: getEnv(GeocodeBaseUrl, ""),
 	}
 
 	config.WeatherConfig = WeatherConfig{
-		APIKey:  getEnv("WEATHER_API_KEY", ""),
-		BaseURL: getEnv("WEATHER_BASE_URL", ""),
+		APIKey:  getEnv(WeatherApiKey, ""),
+		BaseURL: getEnv(WeatherBaseUrl, ""),
 	}
 
 	config.RedisConfig = RedisConfig{
-		Addr:     getEnv("REDIS_ADDRESS", ""),
-		Password: getEnv("REDIS_PASSWORD", ""),
-		DB:       parseEnvInt("REDIS_DB", 0),
-		Timeout:  10,
+		Addr:     getEnv(RedisAddress, ""),
+		Password: getEnv(RedisPassword, ""),
+		DB:       parseEnvInt(RedisDB, 0),
+		Timeout:  time.Second * time.Duration(parseEnvInt(RedisTimeout, 10)),
 	}
 
 	config.PostgresConfig = PostgresConfig{
-		Database: getEnv("POSTGRES_DATABASE", ""),
-		Password: getEnv("POSTGRES_PASSWORD", ""),
-		Host:     getEnv("POSTGRES_HOST", "localhost"),
-		Port:     parseEnvInt("POSTGRES_PORT", 5432),
-		SSLMode:  getEnv("POSTGRES_SSL_MODE", "disable"),
-		User:     getEnv("POSTGRES_USER", ""),
-		TimeZone: getEnv("POSTGRES_TIMEZONE", "Asia/Shanghai"),
+		Database: getEnv(PostgresDatabase, ""),
+		Password: getEnv(PostgresPassword, ""),
+		Host:     getEnv(PostgresHost, "localhost"),
+		Port:     parseEnvInt(PostgresPort, 5432),
+		SSLMode:  getEnv(PostgresSslMode, "disable"),
+		User:     getEnv(PostgresUser, ""),
+		TimeZone: getEnv(PostgresTimezone, "Asia/Shanghai"),
 	}
 
 	return &config, nil
