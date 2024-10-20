@@ -10,3 +10,11 @@ type UserDetails struct {
 	PhotoURL      *string `json:"photoURL,omitempty" validate:"url" example:"https://example.com/photo.jpg"`
 	Disabled      bool    `json:"disabled" validate:"required" example:"false"`
 }
+
+type UidBody struct {
+	UID string `json:"uid" validate:"required" example:"0MhHcnVNBMeCIygoBHDDt0SvT053"`
+}
+
+type EmailBody struct {
+	Email string `json:"email" validate:"required,email" example:"test@test.com"`
+}

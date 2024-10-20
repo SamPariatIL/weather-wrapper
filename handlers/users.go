@@ -13,6 +13,9 @@ type UserHandler interface {
 	CreateUser(ctx *fiber.Ctx) error
 	UpdateUser(ctx *fiber.Ctx) error
 	DeleteUser(ctx *fiber.Ctx) error
+	GenerateToken(ctx *fiber.Ctx) error
+	SendVerificationEmail(ctx *fiber.Ctx) error
+	ResetPassword(ctx *fiber.Ctx) error
 }
 
 type userHandler struct {
@@ -118,4 +121,100 @@ func (uh *userHandler) DeleteUser(ctx *fiber.Ctx) error {
 	uh.logger.Info(successDeletingUser)
 	return ctx.Status(fiber.StatusOK).
 		JSON(utils.CustomResponse(deletedUserId, fiber.StatusOK, "", successDeletingUser))
+}
+
+// GenerateToken godoc
+// @Summary Generate token
+// @Description Generate a token
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param token body entities.UidBody true "Token body"
+// @Success 200
+// @Failure 400
+// @Failure 500
+// @Router /users/token [post]
+func (uh *userHandler) GenerateToken(ctx *fiber.Ctx) error {
+	user := new(entities.UidBody)
+
+	if err := ctx.BodyParser(user); err != nil {
+		uh.logger.Error(err.Error())
+		return ctx.Status(fiber.StatusBadRequest).
+			JSON(utils.CustomResponse(nil, fiber.StatusBadRequest, "", err.Error()))
+	}
+
+	token, err := uh.userService.GenerateToken(context.Background(), user.UID)
+	if err != nil {
+		uh.logger.Error(err.Error())
+		return ctx.Status(fiber.StatusInternalServerError).
+			JSON(utils.CustomResponse(nil, fiber.StatusInternalServerError, tokenGenerationError, err.Error()))
+	}
+
+	uh.logger.Info(successGeneratingToken)
+	return ctx.Status(fiber.StatusOK).
+		JSON(utils.CustomResponse(token, fiber.StatusOK, "", successGeneratingToken))
+}
+
+// SendVerificationEmail godoc
+// @Summary Send verification email
+// @Description Send a verification email
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param email body entities.EmailBody true "Email body"
+// @Success 200
+// @Failure 400
+// @Failure 500
+// @Router /users/verify [post]
+func (uh *userHandler) SendVerificationEmail(ctx *fiber.Ctx) error {
+	emailBody := new(entities.EmailBody)
+
+	if err := ctx.BodyParser(emailBody); err != nil {
+		uh.logger.Error(err.Error())
+		return ctx.Status(fiber.StatusBadRequest).
+			JSON(utils.CustomResponse(nil, fiber.StatusBadRequest, "", err.Error()))
+	}
+
+	link, err := uh.userService.SendVerificationEmail(context.Background(), emailBody.Email)
+	if err != nil {
+		uh.logger.Error(err.Error())
+		return ctx.Status(fiber.StatusInternalServerError).
+			JSON(utils.CustomResponse(nil, fiber.StatusInternalServerError, emailSendingError, err.Error()))
+	}
+
+	uh.logger.Info(successSendingEmail)
+	return ctx.Status(fiber.StatusOK).
+		JSON(utils.CustomResponse(map[string]string{"link": *link}, fiber.StatusOK, "", successSendingEmail))
+}
+
+// ResetPassword godoc
+// @Summary Reset password
+// @Description Send a verification email to reset password
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param email body entities.EmailBody true "Email body"
+// @Success 200
+// @Failure 400
+// @Failure 500
+// @Router /users/reset-password [post]
+func (uh *userHandler) ResetPassword(ctx *fiber.Ctx) error {
+	emailBody := new(entities.EmailBody)
+
+	if err := ctx.BodyParser(emailBody); err != nil {
+		uh.logger.Error(err.Error())
+		return ctx.Status(fiber.StatusBadRequest).
+			JSON(utils.CustomResponse(nil, fiber.StatusBadRequest, "", err.Error()))
+	}
+
+	link, err := uh.userService.ResetPassword(context.Background(), emailBody.Email)
+	if err != nil {
+		uh.logger.Error(err.Error())
+		return ctx.Status(fiber.StatusInternalServerError).
+			JSON(utils.CustomResponse(nil, fiber.StatusInternalServerError, emailSendingError, err.Error()))
+	}
+
+	uh.logger.Info(successSendingEmail)
+	return ctx.Status(fiber.StatusOK).
+		JSON(utils.CustomResponse(map[string]string{"link": *link}, fiber.StatusOK, "", successSendingEmail))
 }

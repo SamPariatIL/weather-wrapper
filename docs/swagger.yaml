@@ -1,5 +1,21 @@
 basePath: /api/v1
 definitions:
+  entities.EmailBody:
+    properties:
+      email:
+        example: test@test.com
+        type: string
+    required:
+    - email
+    type: object
+  entities.UidBody:
+    properties:
+      uid:
+        example: 0MhHcnVNBMeCIygoBHDDt0SvT053
+        type: string
+    required:
+    - uid
+    type: object
   entities.UserDetails:
     properties:
       disabled:
@@ -144,6 +160,30 @@ paths:
       summary: Update user
       tags:
       - users
+  /users/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Send a verification email to reset password
+      parameters:
+      - description: Email body
+        in: body
+        name: email
+        required: true
+        schema:
+          $ref: '#/definitions/entities.EmailBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Reset password
+      tags:
+      - users
   /users/signup:
     post:
       consumes:
@@ -166,6 +206,54 @@ paths:
         "500":
           description: Internal Server Error
       summary: Create user
+      tags:
+      - users
+  /users/token:
+    post:
+      consumes:
+      - application/json
+      description: Generate a token
+      parameters:
+      - description: Token body
+        in: body
+        name: token
+        required: true
+        schema:
+          $ref: '#/definitions/entities.UidBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Generate token
+      tags:
+      - users
+  /users/verify:
+    post:
+      consumes:
+      - application/json
+      description: Send a verification email
+      parameters:
+      - description: Email body
+        in: body
+        name: email
+        required: true
+        schema:
+          $ref: '#/definitions/entities.EmailBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Send verification email
       tags:
       - users
   /weather/forecast:

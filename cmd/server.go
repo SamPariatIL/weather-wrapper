@@ -52,7 +52,10 @@ func setupRoutes(app *fiber.App, logger *zap.Logger) {
 	geocodingV1.Get("/reverse", geocodingHandler.GetCityFromLatLon)
 
 	usersV1 := v1.Group("/users")
+	usersV1.Get("/token", userHandler.GenerateToken)
 	usersV1.Post("/signup", userHandler.CreateUser)
+	usersV1.Post("/verify", userHandler.SendVerificationEmail)
+	usersV1.Post("/reset-password", userHandler.ResetPassword)
 	usersV1.Put("/:uid", userHandler.UpdateUser)
 	usersV1.Delete("/:uid", userHandler.DeleteUser)
 }
