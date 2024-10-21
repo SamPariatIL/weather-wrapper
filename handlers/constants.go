@@ -20,4 +20,7 @@ const (
 	tokenGenerationError            = "something went wrong generating the token"
 	emailSendingError               = "something went wrong sending the email"
 	successSendingEmail             = "successfully sent the email"
+	airPollutionFetchingError       = "something went wrong fetching the air pollution"
+	successFetchingAirPollution     = "successfully fetched the air pollution"
+	invalidDate                     = "invalid date"
 )

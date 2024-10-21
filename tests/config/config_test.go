@@ -50,6 +50,9 @@ func (suite *ConfigSuite) SetupTest() {
 	envMap[config.PostgresSslMode] = "postgres_ssl_mode"
 	envMap[config.PostgresTimezone] = "postgres_time_zone"
 
+	envMap[config.AirPollutionApiKey] = "air_pollution_api_key"
+	envMap[config.AirPollutionBaseUrl] = "air_pollution_base_url"
+
 	for key, value := range envMap {
 		err := os.Setenv(key, value)
 		if err != nil {
@@ -97,6 +100,8 @@ func (suite *ConfigSuite) TestGetConfigSuccess() {
 	suite.Equal(5432, conf.PostgresConfig.Port)
 	suite.Equal("postgres_ssl_mode", conf.PostgresConfig.SSLMode)
 	suite.Equal("postgres_time_zone", conf.PostgresConfig.TimeZone)
+	suite.Equal("air_pollution_api_key", conf.AirPollutionConfig.APIKey)
+	suite.Equal("air_pollution_base_url", conf.AirPollutionConfig.BaseURL)
 }
 
 func TestConfigSuite(t *testing.T) {

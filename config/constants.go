@@ -31,4 +31,7 @@ const (
 	PostgresSslMode  = "POSTGRES_SSL_MODE"
 	PostgresUser     = "POSTGRES_USER"
 	PostgresTimezone = "POSTGRES_TIMEZONE"
+
+	AirPollutionApiKey  = "AIR_POLLUTION_API_KEY"
+	AirPollutionBaseUrl = "AIR_POLLUTION_BASE_URL"
 )

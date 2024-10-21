@@ -56,3 +56,29 @@ func ValidateCity(city string) error {
 
 	return nil
 }
+
+func ValidateDateRange(startDate, endDate string) (int64, int64, error) {
+	if startDate == "" || endDate == "" {
+		return 0, 0, errors.New("date is empty")
+	}
+
+	startDateInt, err := strconv.ParseInt(startDate, 10, 64)
+	if err != nil {
+		return 0, 0, errors.New("start date is not a number")
+	}
+
+	endDateInt, err := strconv.ParseInt(endDate, 10, 64)
+	if err != nil {
+		return 0, 0, errors.New("end date is not a number")
+	}
+
+	if startDateInt > endDateInt {
+		return 0, 0, errors.New("start date must be before end date")
+	}
+
+	if startDateInt < 0 || endDateInt < 0 {
+		return 0, 0, errors.New("date must be positive")
+	}
+
+	return startDateInt, endDateInt, nil
+}

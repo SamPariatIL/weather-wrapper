@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"github.com/SamPariatIL/weather-wrapper/entities"
 	"github.com/SamPariatIL/weather-wrapper/services"
 	"github.com/SamPariatIL/weather-wrapper/utils"
@@ -50,7 +49,7 @@ func (uh *userHandler) CreateUser(ctx *fiber.Ctx) error {
 			JSON(utils.CustomResponse(nil, fiber.StatusBadRequest, "", err.Error()))
 	}
 
-	uid, err := uh.userService.CreateUser(context.Background(), user)
+	uid, err := uh.userService.CreateUser(user)
 	if err != nil {
 		uh.logger.Error(err.Error())
 		return ctx.Status(fiber.StatusInternalServerError).
@@ -86,7 +85,7 @@ func (uh *userHandler) UpdateUser(ctx *fiber.Ctx) error {
 			JSON(utils.CustomResponse(nil, fiber.StatusBadRequest, "", err.Error()))
 	}
 
-	updatedUserId, err := uh.userService.UpdateUser(context.Background(), uid, user)
+	updatedUserId, err := uh.userService.UpdateUser(uid, user)
 	if err != nil {
 		uh.logger.Error(err.Error())
 		return ctx.Status(fiber.StatusInternalServerError).
@@ -111,7 +110,7 @@ func (uh *userHandler) UpdateUser(ctx *fiber.Ctx) error {
 func (uh *userHandler) DeleteUser(ctx *fiber.Ctx) error {
 	uid := ctx.Params("uid")
 
-	deletedUserId, err := uh.userService.DeleteUser(context.Background(), uid)
+	deletedUserId, err := uh.userService.DeleteUser(uid)
 	if err != nil {
 		uh.logger.Error(err.Error())
 		return ctx.Status(fiber.StatusInternalServerError).
@@ -143,7 +142,7 @@ func (uh *userHandler) GenerateToken(ctx *fiber.Ctx) error {
 			JSON(utils.CustomResponse(nil, fiber.StatusBadRequest, "", err.Error()))
 	}
 
-	token, err := uh.userService.GenerateToken(context.Background(), user.UID)
+	token, err := uh.userService.GenerateToken(user.UID)
 	if err != nil {
 		uh.logger.Error(err.Error())
 		return ctx.Status(fiber.StatusInternalServerError).
@@ -175,7 +174,7 @@ func (uh *userHandler) SendVerificationEmail(ctx *fiber.Ctx) error {
 			JSON(utils.CustomResponse(nil, fiber.StatusBadRequest, "", err.Error()))
 	}
 
-	link, err := uh.userService.SendVerificationEmail(context.Background(), emailBody.Email)
+	link, err := uh.userService.SendVerificationEmail(emailBody.Email)
 	if err != nil {
 		uh.logger.Error(err.Error())
 		return ctx.Status(fiber.StatusInternalServerError).
@@ -207,7 +206,7 @@ func (uh *userHandler) ResetPassword(ctx *fiber.Ctx) error {
 			JSON(utils.CustomResponse(nil, fiber.StatusBadRequest, "", err.Error()))
 	}
 
-	link, err := uh.userService.ResetPassword(context.Background(), emailBody.Email)
+	link, err := uh.userService.ResetPassword(emailBody.Email)
 	if err != nil {
 		uh.logger.Error(err.Error())
 		return ctx.Status(fiber.StatusInternalServerError).

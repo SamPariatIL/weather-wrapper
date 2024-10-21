@@ -8,12 +8,12 @@ import (
 )
 
 type UserService interface {
-	CreateUser(ctx context.Context, user *entities.UserDetails) (*string, error)
-	UpdateUser(ctx context.Context, uid string, user *entities.UserDetails) (*string, error)
-	DeleteUser(ctx context.Context, uid string) (*string, error)
-	GenerateToken(ctx context.Context, uid string) (*string, error)
-	SendVerificationEmail(ctx context.Context, email string) (*string, error)
-	ResetPassword(ctx context.Context, email string) (*string, error)
+	CreateUser(user *entities.UserDetails) (*string, error)
+	UpdateUser(uid string, user *entities.UserDetails) (*string, error)
+	DeleteUser(uid string) (*string, error)
+	GenerateToken(uid string) (*string, error)
+	SendVerificationEmail(email string) (*string, error)
+	ResetPassword(email string) (*string, error)
 }
 
 type userService struct {
@@ -28,8 +28,8 @@ func NewUserService(ur repository.UserRepository, zl *zap.Logger) UserService {
 	}
 }
 
-func (us *userService) CreateUser(ctx context.Context, user *entities.UserDetails) (*string, error) {
-	userId, err := us.userRepo.CreateUser(ctx, user)
+func (us *userService) CreateUser(user *entities.UserDetails) (*string, error) {
+	userId, err := us.userRepo.CreateUser(context.Background(), user)
 	if err != nil {
 		return nil, err
 	}
@@ -37,8 +37,8 @@ func (us *userService) CreateUser(ctx context.Context, user *entities.UserDetail
 	return userId, nil
 }
 
-func (us *userService) UpdateUser(ctx context.Context, uid string, user *entities.UserDetails) (*string, error) {
-	userId, err := us.userRepo.UpdateUser(ctx, uid, user)
+func (us *userService) UpdateUser(uid string, user *entities.UserDetails) (*string, error) {
+	userId, err := us.userRepo.UpdateUser(context.Background(), uid, user)
 	if err != nil {
 		return nil, err
 	}
@@ -46,8 +46,8 @@ func (us *userService) UpdateUser(ctx context.Context, uid string, user *entitie
 	return userId, nil
 }
 
-func (us *userService) DeleteUser(ctx context.Context, uid string) (*string, error) {
-	userId, err := us.userRepo.DeleteUser(ctx, uid)
+func (us *userService) DeleteUser(uid string) (*string, error) {
+	userId, err := us.userRepo.DeleteUser(context.Background(), uid)
 	if err != nil {
 		return nil, err
 	}
@@ -55,8 +55,8 @@ func (us *userService) DeleteUser(ctx context.Context, uid string) (*string, err
 	return userId, nil
 }
 
-func (us *userService) GenerateToken(ctx context.Context, uid string) (*string, error) {
-	token, err := us.userRepo.GenerateToken(ctx, uid)
+func (us *userService) GenerateToken(uid string) (*string, error) {
+	token, err := us.userRepo.GenerateToken(context.Background(), uid)
 	if err != nil {
 		return nil, err
 	}
@@ -64,8 +64,8 @@ func (us *userService) GenerateToken(ctx context.Context, uid string) (*string, 
 	return token, nil
 }
 
-func (us *userService) SendVerificationEmail(ctx context.Context, email string) (*string, error) {
-	link, err := us.userRepo.SendVerificationEmail(ctx, email)
+func (us *userService) SendVerificationEmail(email string) (*string, error) {
+	link, err := us.userRepo.SendVerificationEmail(context.Background(), email)
 	if err != nil {
 		return nil, err
 	}
@@ -73,8 +73,8 @@ func (us *userService) SendVerificationEmail(ctx context.Context, email string) 
 	return link, nil
 }
 
-func (us *userService) ResetPassword(ctx context.Context, email string) (*string, error) {
-	link, err := us.userRepo.ResetPassword(ctx, email)
+func (us *userService) ResetPassword(email string) (*string, error) {
+	link, err := us.userRepo.ResetPassword(context.Background(), email)
 	if err != nil {
 		return nil, err
 	}

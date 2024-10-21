@@ -8,6 +8,7 @@
 *.so
 *.dylib
 *.scannerwork
+*.vscode
 
 # Test binary, built with `go test -c`
 *.test
@@ -38,6 +39,8 @@ go.work.sum
 .env.postgres-prod
 .env.firebase-local
 .env.firebase-prod
+.env.air_pollution-local
+.env.air_pollution-prod
 
 # Sonar files
 weather-wrapper-sonar.sh

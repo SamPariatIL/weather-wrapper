@@ -49,7 +49,6 @@ func (wr *weatherRepository) GetCurrentWeather(ctx context.Context, latitude, lo
 	}
 
 	wr.logger.Info(fmt.Sprintf("fetched cached weather for %f, %f", latitude, longitude))
-
 	return &currentWeather, nil
 }
 
@@ -72,7 +71,6 @@ func (wr *weatherRepository) GetFiveDayForecast(ctx context.Context, latitude, l
 	}
 
 	wr.logger.Info(fmt.Sprintf("fetched cached five day weather for %f, %f", latitude, longitude))
-
 	return &fiveDayForecast, nil
 }
 
@@ -90,7 +88,6 @@ func (wr *weatherRepository) SetCurrentWeather(ctx context.Context, latitude, lo
 	}
 
 	wr.logger.Info(fmt.Sprintf("saved current weather for %f, %f", latitude, longitude))
-
 	return nil
 }
 
@@ -108,7 +105,6 @@ func (wr *weatherRepository) SetFiveDayForecast(ctx context.Context, latitude, l
 	}
 
 	wr.logger.Info(fmt.Sprintf("saved five day weather for %f, %f", latitude, longitude))
-
 	return nil
 }
 

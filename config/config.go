@@ -14,11 +14,12 @@ var (
 )
 
 type Config struct {
-	FirebaseConfig FirebaseConfig
-	GeocodeConfig  GeocodeConfig
-	RedisConfig    RedisConfig
-	PostgresConfig PostgresConfig
-	WeatherConfig  WeatherConfig
+	AirPollutionConfig AirPollutionConfig
+	FirebaseConfig     FirebaseConfig
+	GeocodeConfig      GeocodeConfig
+	RedisConfig        RedisConfig
+	PostgresConfig     PostgresConfig
+	WeatherConfig      WeatherConfig
 }
 
 type GeocodeConfig struct {
@@ -60,6 +61,11 @@ type FirebaseConfig struct {
 	AuthProviderX509CertURL string `json:"auth_provider_x_509_cert_url"`
 	ClientX509CertURL       string `json:"client_x_509_cert_url"`
 	UniverseDomain          string `json:"universe_domain"`
+}
+
+type AirPollutionConfig struct {
+	APIKey  string
+	BaseURL string
 }
 
 func getEnv(key, fallback string) string {
@@ -123,6 +129,11 @@ func loadConfig() (*Config, error) {
 		SSLMode:  getEnv(PostgresSslMode, "disable"),
 		User:     getEnv(PostgresUser, ""),
 		TimeZone: getEnv(PostgresTimezone, "Asia/Shanghai"),
+	}
+
+	config.AirPollutionConfig = AirPollutionConfig{
+		APIKey:  getEnv(AirPollutionApiKey, ""),
+		BaseURL: getEnv(AirPollutionBaseUrl, ""),
 	}
 
 	return &config, nil

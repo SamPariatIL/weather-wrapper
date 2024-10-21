@@ -60,6 +60,100 @@ info:
   title: Weather Wrapper API
   version: "1.0"
 paths:
+  /air-pollution/forecast:
+    get:
+      consumes:
+      - application/json
+      description: Get air pollution forecast for a given city
+      parameters:
+      - description: Latitude
+        in: query
+        name: lat
+        required: true
+        type: string
+      - description: Longitude
+        in: query
+        name: long
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Get air pollution forecast
+      tags:
+      - air-pollution
+  /air-pollution/history:
+    get:
+      consumes:
+      - application/json
+      description: Get historical air pollution for a given city
+      parameters:
+      - description: Latitude
+        in: query
+        name: lat
+        required: true
+        type: string
+      - description: Longitude
+        in: query
+        name: long
+        required: true
+        type: string
+      - description: Start Date (Epoch)
+        in: query
+        name: start
+        required: true
+        type: string
+      - description: End Date (Epoch)
+        in: query
+        name: end
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Get historical air pollution
+      tags:
+      - air-pollution
+  /air-pollution/now:
+    get:
+      consumes:
+      - application/json
+      description: Get current air pollution for a given city
+      parameters:
+      - description: Latitude
+        in: query
+        name: lat
+        required: true
+        type: string
+      - description: Longitude
+        in: query
+        name: long
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Get current air pollution
+      tags:
+      - air-pollution
   /geocode:
     get:
       consumes:

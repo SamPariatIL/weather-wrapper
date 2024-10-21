@@ -32,6 +32,10 @@ func setupRoutes(app *fiber.App, logger *zap.Logger) {
 	geocodingService := services.NewGeocodingService(geocodingRepo, logger)
 	geocodingHandler := handlers.NewGeocodingHandler(geocodingService, logger)
 
+	airPollutionRepo := repository.NewAirPollutionRepository(redisClient, logger)
+	airPollutionService := services.NewAirPollutionService(airPollutionRepo, logger)
+	airPollutionHandler := handlers.NewAirPollutionHandler(airPollutionService, logger)
+
 	api := app.Group("/api")
 	v1 := api.Group("/v1")
 
@@ -58,6 +62,11 @@ func setupRoutes(app *fiber.App, logger *zap.Logger) {
 	usersV1.Post("/reset-password", userHandler.ResetPassword)
 	usersV1.Put("/:uid", userHandler.UpdateUser)
 	usersV1.Delete("/:uid", userHandler.DeleteUser)
+
+	airPollutionV1 := v1.Group("/air-pollution")
+	airPollutionV1.Get("/now", airPollutionHandler.GetCurrentAirPollution)
+	airPollutionV1.Get("/forecast", airPollutionHandler.GetAirPollutionForecast)
+	airPollutionV1.Get("/history", airPollutionHandler.GetHistoricalAirPollution)
 }
 
 func RunServer() {
