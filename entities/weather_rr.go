@@ -46,6 +46,20 @@ type CurrentWeather struct {
 	COD      int    `json:"cod"`
 }
 
+type CurrentWeatherResponse struct {
+	Latitude  float32 `json:"latitude"`
+	Longitude float32 `json:"longitude"`
+	Wind      struct {
+		Value          float32 `json:"value"`
+		AngleInDegrees float32 `json:"angleInDegrees"`
+	} `json:"wind"`
+	Clouds              int     `json:"clouds"`
+	SunriseEpoch        int     `json:"sunriseEpoch"`
+	SunsetEpoch         int     `json:"sunsetEpoch"`
+	Temperature         float32 `json:"temperature"`
+	RealFeelTemperature float32 `json:"realFeelTemperature"`
+}
+
 type Forecast struct {
 	COD     string `json:"cod"`
 	Message int    `json:"message"`

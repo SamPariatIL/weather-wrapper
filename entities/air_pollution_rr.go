@@ -21,3 +21,16 @@ type AirPollution struct {
 		Components AirPollutionComponents `json:"components"`
 	} `json:"list"`
 }
+
+type CurrentAirPollutionResponse struct {
+	AQI int `json:"aqi"`
+	AirPollutionComponents
+	Latitude  float32 `json:"latitude"`
+	Longitude float32 `json:"longitude"`
+}
+
+type AirPollutionForecastResponse struct {
+}
+
+type HistoricalAirPollutionResponse struct {
+}
